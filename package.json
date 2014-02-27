@@ -26,11 +26,12 @@
   "main": "./lib/ref.js",
   "scripts": {
     "docs": "node docs/compile",
-    "test": "mocha -gc --reporter spec"
+    "test": "mocha -gc --reporter spec",
+    "install": "node ./build.js"
   },
   "dependencies": {
-    "bindings": "*",
-    "debug": "*"
+    "debug": "*",
+    "prebuilt": "https://github.com/tailsu/node-prebuilt/tarball/master"
   },
   "devDependencies": {
     "dox": "*",
