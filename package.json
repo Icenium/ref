@@ -34,7 +34,7 @@
     "prebuilt": "https://github.com/tailsu/node-prebuilt/tarball/master",
     "bindings": "~1.2.0",
     "debug": "2",
-    "nan": "~1.5.1"
+    "nan": "~1.8.4"
   },
   "devDependencies": {
     "dox": "0.4.4",
