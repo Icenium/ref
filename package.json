@@ -31,7 +31,6 @@
     "install": "node ./build.js"
   },
   "dependencies": {
-    "debug": "*",
     "prebuilt": "https://github.com/tailsu/node-prebuilt/tarball/master",
     "bindings": "~1.2.0",
     "debug": "2",
