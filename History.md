@@ -1,4 +1,22 @@
 
+1.1.3 / 2015-09-23
+==================
+
+  * appveyor: remove v1
+  * speed increase by avoiding `JSON.stringify()` constant call (#39, @dan-tull)
+
+1.1.2 / 2015-09-19
+==================
+
+  * CString: allow a Buffer to be used as backing store in `set()` (https://github.com/node-ffi/node-ffi/issues/169)
+  * travis, appveyor: test Node.js v4
+
+1.1.1 / 2015-09-14
+==================
+
+  * remove unused WrapPointer overload (fix compile warning)
+  * appveyor: better Windows testing
+
 1.1.0 / 2015-08-26
 ==================
 
