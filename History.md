@@ -1,4 +1,29 @@
 
+1.3.2 / 2016-01-10
+==================
+
+  * int64: fix failing OS X tests now
+  * int64: better error handling for Linux
+
+1.3.1 / 2015-12-02
+==================
+
+  * writeUInt64: better error checking for `WriteUInt64()`
+  * writeUInt64: allow hex or octal input string values
+
+1.3.0 / 2015-12-02
+==================
+
+  * writeInt64: better error checking for `WriteInt64()`
+  * writeInt64: allow hex or octal input string values
+  * appveyor: test node v5
+  * travis: test node v5
+
+1.2.0 / 2015-10-08
+==================
+
+  * force Buffer length to 0 if NULL is read (#42, @saneki)
+
 1.1.3 / 2015-09-23
 ==================
 

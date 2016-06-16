@@ -1,4 +1,3 @@
-
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
@@ -356,11 +355,23 @@ NAN_METHOD(WriteInt64) {
   if (in->IsNumber()) {
     val = GetInt64(in);
   } else if (in->IsString()) {
-    // Have to do this because strtoll doesn't set errno to 0 on success :(
-    errno = 0;
-    String::Utf8Value str(in);
-    val = strtoll(*str, NULL, 10);
-    // TODO: better error handling; check errno
+    char *endptr, *str;
+    int base = 0;
+    String::Utf8Value _str(in);
+    str = *_str;
+
+    errno = 0;     /* To distinguish success/failure after call */
+    val = strtoll(str, &endptr, base);
+
+    if (endptr == str) {
+      return Nan::ThrowTypeError("writeInt64: no digits we found in input String");
+    } else  if (errno == ERANGE && (val == LLONG_MAX || val == LLONG_MIN)) {
+      return Nan::ThrowTypeError("writeInt64: input String numerical value out of range");
+    } else if (errno != 0 && val == 0) {
+      char errmsg[200];
+      snprintf(errmsg, sizeof(errmsg), "writeInt64: %s", strerror(errno));
+      return Nan::ThrowTypeError(errmsg);
+    }
   } else {
     return Nan::ThrowTypeError("writeInt64: Number/String 64-bit value required");
   }
@@ -384,7 +395,7 @@ NAN_METHOD(ReadUInt64) {
     return Nan::ThrowTypeError("readUInt64: Buffer instance expected");
   }
 
-  int64_t offset = GetInt64(info[1]);;
+  int64_t offset = GetInt64(info[1]);
   char *ptr = Buffer::Data(buf.As<Object>()) + offset;
 
   if (ptr == NULL) {
@@ -423,19 +434,31 @@ NAN_METHOD(WriteUInt64) {
     return Nan::ThrowTypeError("writeUInt64: Buffer instance expected");
   }
 
-  int64_t offset = GetInt64(info[1]);;
+  int64_t offset = GetInt64(info[1]);
   char *ptr = Buffer::Data(buf.As<Object>()) + offset;
 
   Local<Value> in = info[2];
   uint64_t val;
   if (in->IsNumber()) {
-    val = GetInt64(in);;
+    val = GetInt64(in);
   } else if (in->IsString()) {
-    // Have to do this because strtoull doesn't set errno to 0 on success :(
-    errno = 0;
-    String::Utf8Value str(in);
-    val = strtoull(*str, NULL, 10);
-    // TODO: better error handling; check errno
+    char *endptr, *str;
+    int base = 0;
+    String::Utf8Value _str(in);
+    str = *_str;
+
+    errno = 0;     /* To distinguish success/failure after call */
+    val = strtoull(str, &endptr, base);
+
+    if (endptr == str) {
+      return Nan::ThrowTypeError("writeUInt64: no digits we found in input String");
+    } else if (errno == ERANGE && val == ULLONG_MAX) {
+      return Nan::ThrowTypeError("writeUInt64: input String numerical value out of range");
+    } else if (errno != 0 && val == 0) {
+      char errmsg[200];
+      snprintf(errmsg, sizeof(errmsg), "writeUInt64: %s", strerror(errno));
+      return Nan::ThrowTypeError(errmsg);
+    }
   } else {
     return Nan::ThrowTypeError("writeUInt64: Number/String 64-bit value required");
   }
@@ -582,7 +605,7 @@ NAN_MODULE_INIT(init) {
   SET_SIZEOF(pointer, char *);
   SET_SIZEOF(size_t, size_t);
   // size of a Persistent handle to a JS object
-	SET_SIZEOF(Object, Nan::Persistent<Object>);
+  SET_SIZEOF(Object, Nan::Persistent<Object>);
 
   // "alignof" map
   Local<Object> amap = Nan::New<v8::Object>();
@@ -612,7 +635,7 @@ NAN_MODULE_INIT(init) {
   SET_ALIGNOF(ulonglong, unsigned long long);
   SET_ALIGNOF(pointer, char *);
   SET_ALIGNOF(size_t, size_t);
-	SET_ALIGNOF(Object, Nan::Persistent<Object>);
+  SET_ALIGNOF(Object, Nan::Persistent<Object>);
 
   // exports
   target->Set(Nan::New<v8::String>("sizeof").ToLocalChecked(), smap);
